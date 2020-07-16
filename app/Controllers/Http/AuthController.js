@@ -2,6 +2,7 @@
 const Encryption = use('Encryption')
 
 class AuthController {
+
     async login({ request, response, auth }) {
         const { email, password } = request.only(['email', 'password'])
         const tkn = await auth.query().withRefreshToken().attempt(email, password, true)
