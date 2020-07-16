@@ -1,5 +1,6 @@
 'use strict'
 const Encryption = use('Encryption')
+const User = use('App/Models/User')
 
 class AuthController {
 
@@ -14,7 +15,7 @@ class AuthController {
     //Registro
     async register ({ request, response, auth }) {
         const us_data = request.only(User.store)
-        const user = await User.create(userData)
+        const user = await User.create(us_data)
         const token = await auth.query().withRefreshToken().attempt(user.email, us_data.password, true)
         return response.created({
           status: true,
