@@ -27,3 +27,6 @@ Route.post('/login','AuthController.login')
   .validator(new Map([
     [['users.store'],['StoreUser']]
   ]))*/
+
+Route.post('/register', 'AuthController.register')
+.validator('RegisterUser')
