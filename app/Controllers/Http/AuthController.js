@@ -12,6 +12,14 @@ class AuthController {
         return response.ok({ tkn, us })
     }
 
+    //Genera token
+    async TokenGenerate({ request, response, auth }) {
+        const refreshToken = request.input('refresh_token')
+        const token = await auth.newRefreshToken()
+          .generateForRefreshToken(refreshToken)
+        return response.ok(token)
+    }
+
     //Registro
     async register ({ request, response, auth }) {
         const us_data = request.only(User.store)
@@ -23,6 +31,24 @@ class AuthController {
           data: { user, token }
         })
     }
+
+    async logout({ request, response, auth }) {
+        const refreshToken = request.input('refresh_token')
+        const decryptedToken = Encryption.decrypt(refreshToken)
+    
+        try {
+          const user = await auth.getUser()
+          await user.tokens()
+            .where('token', decryptedToken)
+            .delete()
+        } catch (error) {}
+    
+        return response.ok({
+          success: true,
+          message: 'Logged out successfully!',
+          data: {}
+        })
+      }
 }
 
 module.exports = AuthController
